@@ -14,10 +14,10 @@
 td {
   height: 100px;
   width: 100px;
-  background-color: blue;
+  background-color: #00008B;
 }
 
-#circle {  
+.circle {  
   display: flex;
   justify-content: center;
   margin: auto;

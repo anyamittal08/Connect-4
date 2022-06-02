@@ -1,6 +1,6 @@
 const Circle = ({row, col, onClick}) => {
   return (
-    <div id='circle' onClick={onClick} row={row} col={col} className='empty'>
+    <div className='circle' onClick={onClick} row={row} col={col} id={[row, col]}>
     </div>
   )
 }

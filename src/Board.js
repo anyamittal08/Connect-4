@@ -2,35 +2,17 @@ import { useState } from "react";
 
 import Circle from "./Circle";
 
+let boardTemplate = Array(6);
+for (let i = 0; i < boardTemplate.length; i++) {
+  boardTemplate[i] = Array(7).fill(null)
+}
+
 const Board = () => { 
 
-  const [currentBoard, setCurrentBoard] = useState(Array(6).fill(Array(7).fill(null)));
+  const [currentBoard, setCurrentBoard] = useState(boardTemplate);
   const [nextPlayerIsRed, setNextPlayerIsRed] = useState(true);
 
-
-  const findLowestEmptyCell = (rowId, colId) => { //causing a stack overflow right now
-    let lowestEmptyRow = parseInt(rowId);
-
-    if (lowestEmptyRow == 5) {
-      return lowestEmptyRow; 
-    } else {
-      console.log(lowestEmptyRow)
-      findLowestEmptyCell(lowestEmptyRow + 1, colId);
-    }    
-  }
-  
-  const handleClick = (e) => {
-    e.target.style.backgroundColor = nextPlayerIsRed ? 'red' : 'yellow';    
-    console.log(`You clicked on (${e.target.getAttribute('row')}, ${e.target.getAttribute('col')})`)
-    let colClicked = e.target.getAttribute('col');
-    let rowClicked = e.target.getAttribute('row')
-    let lowestEmptyRow = findLowestEmptyCell(rowClicked, colClicked);
-
-    console.log(lowestEmptyRow);
-
-    setNextPlayerIsRed(!nextPlayerIsRed)
-  }
-
+  // render circles 
   const renderCircle = (rowId, colId) => {
     return (
       <Circle onClick={handleClick} col={colId} row={rowId}/>
@@ -38,11 +20,56 @@ const Board = () => {
   };
 
 
+  // find the lowest row that the token will be dropped to
+
+  const findLowestEmptyCell = (rowId, colId) => {
+    let lowestEmptyRow = parseInt(rowId);
+
+    if (lowestEmptyRow === 5 || currentBoard[lowestEmptyRow + 1][colId]) {
+      return lowestEmptyRow; 
+    } else {
+      return findLowestEmptyCell(lowestEmptyRow + 1, colId);
+    }    
+  }
+  
+  // click handler (main game mechanics)
+  const handleClick = (e) => {
+    let colClicked = e.target.getAttribute('col');
+    let rowClicked = e.target.getAttribute('row')
+    let lowestEmptyRow = findLowestEmptyCell(rowClicked, colClicked);
+    
+    if (currentBoard[lowestEmptyRow][colClicked]) return;
+
+    document.getElementById([lowestEmptyRow, colClicked]).style.backgroundColor = nextPlayerIsRed ? 'red' : 'yellow'
+
+    let tempBoard = [...currentBoard];
+    tempBoard[lowestEmptyRow][colClicked] = nextPlayerIsRed ? 'red' : 'yellow'
+    
+    setCurrentBoard(tempBoard);
+    setNextPlayerIsRed(!nextPlayerIsRed)
+
+  }
+
+  // restart/new game
+  const newGame = () => {
+    const makeNull = (elem) => elem = null;
+
+
+    const newBoard = currentBoard.map(row => {
+      return row.map(elem => makeNull(elem))
+    }) // seems to be one step behind but does not affect game mechanics 
+
+    setCurrentBoard(newBoard);
+
+    document.querySelectorAll('.circle').forEach(elem => elem.style.backgroundColor = 'white')
+  }
+
   return (
     <div className='game'>
       <div className='game-info'>
         Next Player: {nextPlayerIsRed ? 'Red' : 'Yellow'}
       </div>
+        <button className='btn restart-btn' onClick={newGame}> New game </button>     
         <table className="game-board">
         <tbody>
             {
