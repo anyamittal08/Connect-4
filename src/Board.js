@@ -8,7 +8,7 @@ const Board = () => {
   const [nextPlayerIsRed, setNextPlayerIsRed] = useState(true);
 
 
-  const findLowestEmptyCell = (rowId, colId) => {
+  const findLowestEmptyCell = (rowId, colId) => { //causing a stack overflow right now
     let lowestEmptyRow = parseInt(rowId);
 
     if (lowestEmptyRow == 5) {
