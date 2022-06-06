@@ -38,109 +38,52 @@ const Board = () => {
   // win logic
 
   const determineWinner = (rowClicked, colClicked) => {
+
     // horizontal case 
-  
-    for (let i = 0; i < currentBoard.length; i++) {
+    for (let i = 0; i < 7; i++) {
       if (currentBoard[rowClicked][i] && 
           currentBoard[rowClicked][i] === currentBoard[rowClicked][i+1] && 
           currentBoard[rowClicked][i+1]===currentBoard[rowClicked][i+2] &&
-          currentBoard[rowClicked][i+2]===currentBoard[rowClicked][i+3]) {
-        return currentBoard[rowClicked][i]
-          }
+          currentBoard[rowClicked][i+2]===currentBoard[rowClicked][i+3]) return currentBoard[rowClicked][i]
     }
   
     // vertical case 
-  
-    for (let i = 0; i < currentBoard[i].length; i++) {
+    for (let i = 0; i < 6; i++) {
       if(currentBoard[i][colClicked] &&
         currentBoard[i][colClicked] === currentBoard[i+1][colClicked] &&
         currentBoard[i+1][colClicked] === currentBoard[i+2][colClicked] &&
         currentBoard[i+2][colClicked] === currentBoard[i+3][colClicked]
-        ) {
-        return currentBoard[i][colClicked]
-        } 
+        ) return currentBoard[i][colClicked]
     }
 
-    // ascending diagonal cases
+    // diagonal cases
+    for (let i=0; i<currentBoard.length; i++) {
+      for (let j=0; j<currentBoard[0].length; j++) {
+        if (i+3<currentBoard.length) {
+          if (j+3<currentBoard[0].length &&
+              currentBoard[i][j] === currentBoard[i+1][j+1] &&
+              currentBoard[i][j] === currentBoard[i+2][j+2] &&
+              currentBoard[i][j] === currentBoard[i+3][j+3] 
+            ) return currentBoard[i][j]
 
-    for (let i = 3; i < 6; i++) {
-      for (let j=0; j <= 3; j++) {
-        if (currentBoard[i][j] &&
-          currentBoard[i][j] === currentBoard[i+1][j+1] &&
-          currentBoard[i-1][j+1] === currentBoard[i-2][j+2] &&
-          currentBoard[i-2][j+2] === currentBoard[i-3][j+3]
-        ) return currentBoard[i][j]
+          if (j-3>=0 &&
+              currentBoard[i][j] === currentBoard[i+1][j-1] &&
+              currentBoard[i][j] === currentBoard[i+2][j-2] &&
+              currentBoard[i][j] === currentBoard[i+3][j-3]
+            ) return currentBoard[i][j]
+        }
       }
     }
-
-    for (let i = 3; i < 7; i++) {
-      for (let j=3; j < 6; j++) {
-        if (currentBoard[i][j] &&
-          currentBoard[i][j] === currentBoard[i-1][j-1] &&
-          currentBoard[i-1][j-1] === currentBoard[i-2][j-2] &&
-          currentBoard[i-2][j-2] === currentBoard[i-3][j-3]
-          ) {
-            return currentBoard[i][j]
-          }
-      }
-    }
+    console.log('here')
+    return null;   
   }
-
-  // const determineWinner = (rowClicked, colClicked) => {
-  //   for (let i=0; i < currentBoard.length; i++) {
-  //       // horizontal check
-  //       if (i+3 < currentBoard.length &&
-  //           currentBoard[rowClicked][i] === currentBoard[rowClicked][i+1] &&
-  //           currentBoard[rowClicked][i] === currentBoard[rowClicked][i+2] &&
-  //           currentBoard[rowClicked][i] === currentBoard[rowClicked][i+3]
-  //         ) return currentBoard[rowClicked][i];
-
-  //       }
-
-  //       //vertical check 
-  //   for (let j=0; j<currentBoard[0].length; j++) {
-  //     if (j+3 < currentBoard[0].length &&
-  //         currentBoard[j][colClicked] === currentBoard[j+1][colClicked] &&
-  //         currentBoard[j][colClicked] === currentBoard[j+2][colClicked] &&
-  //         currentBoard[j][colClicked] === currentBoard[j+3][colClicked]
-  //       ) return currentBoard[j][colClicked];
-
-  //   }
-
-  //   for (let i=0; i<currentBoard.length; i++) {
-  //     for (let j=0; j<currentBoard[0].length; j++) {
-  //       if (!currentBoard[i][j]) return;
-
-  //       if (i+3 < currentBoard.length) {
-
-  //             //diagonals going down 
-  //             if (
-  //               j + 3 < currentBoard[0].length &&
-  //               currentBoard[i][j] === currentBoard[i+1][j+1] &&
-  //               currentBoard[i][j] === currentBoard[i+2][j+2] &&
-  //               currentBoard[i][j] === currentBoard[i+3][j+3]
-  //             ) return currentBoard[i][j];
-
-  //             //diagonals going up
-  //             if (
-  //               j-3 >= 0 &&
-  //               currentBoard[i][j] === currentBoard[i+1][j-1] &&
-  //               currentBoard[i][j] === currentBoard[i+2][j-2] &&
-  //               currentBoard[i][j] === currentBoard[i+3][j-3] 
-  //             ) return currentBoard[i][j]
-  //           }
-            
-  //     }
-  //   }
-      
-  //   }
-
 
   // click handler (main game mechanics)
   const handleClick = (e) => {
     let colClicked = e.target.getAttribute('col');
     let rowClicked = e.target.getAttribute('row');
     let lowestEmptyRow = findLowestEmptyCell(rowClicked, colClicked);
+    let winner;
     
     if (currentBoard[lowestEmptyRow][colClicked]) return;
 
@@ -149,11 +92,12 @@ const Board = () => {
     let tempBoard = [...currentBoard];
     tempBoard[lowestEmptyRow][colClicked] = currentPlayer;
     
-    let winner = determineWinner(rowClicked, colClicked);
-    console.log(winner)
-
+    
     setCurrentBoard(tempBoard);
     setNextPlayerIsRed(!nextPlayerIsRed)
+
+    winner = determineWinner(rowClicked, colClicked);
+    console.log(winner)
   }
 
   // restart/new game
