@@ -15,16 +15,16 @@ td {
   border: 1px white;
   height: 100px;
   width: 100px;
-  background-color: #00008B;
+  background-color: #00008b;
 }
 
-.circle {  
+.circle {
   display: flex;
   justify-content: center;
   margin: auto;
   height: 90%;
   width: 90%;
   border-radius: 50%;
-  background-color: white; 
+  background-color: white;
   cursor: pointer;
 }
