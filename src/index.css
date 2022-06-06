@@ -12,6 +12,7 @@
 }
 
 td {
+  border: 1px white;
   height: 100px;
   width: 100px;
   background-color: #00008B;
@@ -25,4 +26,5 @@ td {
   width: 90%;
   border-radius: 50%;
   background-color: white; 
+  cursor: pointer;
 }
