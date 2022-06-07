@@ -4,8 +4,4 @@ import "./index.css";
 import Board from "./Board";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(
-  <React.StrictMode>
-    <Board />
-  </React.StrictMode>
-);
+root.render(<Board />);
