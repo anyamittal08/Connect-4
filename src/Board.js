@@ -8,7 +8,9 @@ for (let i = 0; i < boardTemplate.length; i++) {
 }
 
 const Board = () => {
-  const [currentBoard, setCurrentBoard] = useState(boardTemplate);
+  const [currentBoard, setCurrentBoard] = useState(
+    JSON.parse(JSON.stringify(boardTemplate))
+  );
   const [nextPlayerIsRed, setNextPlayerIsRed] = useState(true);
 
   let currentPlayer = nextPlayerIsRed ? "red" : "yellow";
@@ -93,7 +95,7 @@ const Board = () => {
       colClicked,
     ]).style.backgroundColor = currentPlayer;
 
-    let tempBoard = [...currentBoard];
+    const tempBoard = JSON.parse(JSON.stringify(currentBoard));
     tempBoard[lowestEmptyRow][colClicked] = currentPlayer;
 
     setCurrentBoard(tempBoard);
