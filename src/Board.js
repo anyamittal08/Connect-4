@@ -1,5 +1,11 @@
 import { useState } from "react";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowRotateLeft,
+  faCaretDown,
+} from "@fortawesome/free-solid-svg-icons";
+
 import Circle from "./Circle";
 
 let boardTemplate = Array(6);
@@ -133,7 +139,7 @@ const Board = () => {
   // undo
 
   const undo = () => {
-    if (history.length <= 1) return;
+    if (history.length <= 1 || gameIsADraw() || determineWinner()) return;
     current = history[history.length - 2];
 
     current.board.forEach((row, rowId) => {
@@ -150,12 +156,18 @@ const Board = () => {
     let tempHistory = history.slice(0, history.length - 1);
 
     setHistory(tempHistory);
+    setNextPlayerIsRed(!nextPlayerIsRed);
+  };
+
+  const moveArrow = (e) => {
+    document.querySelector(".arrow-container").style.width = e.offsetX + "px";
+    document.querySelector(".arrow-container").style.backgroundColor = "red";
   };
 
   let winner = determineWinner();
 
   return (
-    <div className="game">
+    <div className="main">
       <div className="game-info">
         {winner
           ? `${winner} wins!`
@@ -165,31 +177,39 @@ const Board = () => {
           ? "Next Player: Red"
           : "Next Player: Yellow"}
       </div>
-      <button className="btn restart-btn" onClick={newGame}>
-        {" "}
-        New game{" "}
-      </button>
-      <button className="btn undo-btn" onClick={undo}>
-        {" "}
-        Undo{" "}
-      </button>
-      <table className="game-board">
-        <tbody>
-          {current.board.map((rowArr, rowId) => {
-            return (
-              <tr key={rowId}>
-                {rowArr.map((circle, colId) => {
-                  return (
-                    <td key={`${rowId}, ${colId}`}>
-                      {renderCircle(rowId, colId)}
-                    </td>
-                  );
-                })}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+
+      <div className="btn-container">
+        <button className="btn restart-btn" onClick={newGame}>
+          {" "}
+          New game{" "}
+        </button>
+        <button className="btn undo-btn" onClick={undo}>
+          {" "}
+          <FontAwesomeIcon icon={faArrowRotateLeft} />{" "}
+        </button>
+      </div>
+      <div className="game">
+        {/* <div className="arrow-container" onMouseMove={moveArrow}>
+          <FontAwesomeIcon className="arrow" icon={faCaretDown} />
+        </div> */}
+        <table className="game-board">
+          <tbody>
+            {current.board.map((rowArr, rowId) => {
+              return (
+                <tr key={rowId}>
+                  {rowArr.map((circle, colId) => {
+                    return (
+                      <td key={`${rowId}, ${colId}`}>
+                        {renderCircle(rowId, colId)}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
